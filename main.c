@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 
 #define APP_NAME "Simple Calculator"
 #define NUMBER_OF_BUTTONS 18
@@ -26,6 +27,7 @@ struct AppState {
 #define ROW_HEIGHT 50
 #define COL_WIDTH 50
 #define EDGE_PADDING 4
+#define EXPR_POS_X 190
 
 // Calculate the start positions (x, y) for the first row at the bottom
 int startX = EDGE_PADDING;  
@@ -147,7 +149,11 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
 
 int main(void) {
   int fontSize = 18;
+  int fontWidth = 9;
+  int exprPosX = EXPR_POS_X;
+
   Button buttons[NUMBER_OF_BUTTONS];
+  init_window();
   init_button_geo(buttons);
   print_buttons(buttons);
   
@@ -155,8 +161,6 @@ int main(void) {
   int expr_len = 0;
   expr[expr_len] = '0';
 
-  init_window();
-  // init_button_geo
 
   while (!WindowShouldClose()) {
     bool isFocused = IsWindowFocused();
@@ -170,19 +174,21 @@ int main(void) {
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    DrawText(expr, 190, 10, fontSize, DARKGRAY);
-    // if (expr_len == 0) {
-    // }
+
+    // render expr to screen
+    DrawText(expr, exprPosX, 10, fontSize, DARKGRAY);
 
     if (isFocused) {
       // todo: when calculating result, change font of input to lighter color
       // todo: when calculating result, change font of result to darker color (darkgrey)
+      // todo: insert space if operator is pressed
 
       // get mouse down first, then run collision logic
       if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mousePos = GetMousePosition();
         char tkn = find_collision(mousePos, buttons);
-        if (tkn != '\0') {
+        printf("tkn: %c\n", tkn);
+        if (tkn != '\0' && tkn != 'C' && tkn != '=') {
           printf("found collision: %c\n", tkn);
           if (expr_len >= MAX_EXPR_LENGTH) {
             printf("hit max expr len\n");
@@ -192,6 +198,15 @@ int main(void) {
 
           expr[expr_len] = tkn;
           expr_len++;
+          // todo: repositioning too early if first click
+          exprPosX -= fontWidth;
+        } else if (tkn == 'C') {
+          // todo bug: 2nd half of dbl squares not being detected in collision
+          memset(expr, 0, sizeof(char) * (MAX_EXPR_LENGTH + 1));
+          expr_len = 0;
+          expr[expr_len] = '0';
+          exprPosX = EXPR_POS_X;
+          printf("on C, what is expr: %s\n", expr);
         } else {
           printf("No collision, NULL\n");
         }

@@ -104,6 +104,31 @@ make_btn(int x, int y, int sz, Color c, char tkn, bool is_square)
   return (Button) {.rect = r, .color = c, .tkn = tkn, .is_square = is_square};
 }
 
+
+// refactor idea
+/* #if 0 */
+/* #define SQUARE_WIDTH 49 */
+/* #define MAKE_SQRE_BTN(X, Y, TKN)                     \ */
+/*   make_btn(X, Y, SQUARE_WIDTH, LIGHTGRAY, TKN, true) \ */
+/* #define MAKE_RECT_BTN(X, Y, TKN)           \ */
+/*   make_btn(X, Y, SQUARE_WIDTH, TKN, false) \ */
+/* void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) { */
+/*     int rowHeight = 50; */
+/*     int colWidth = 50; */
+    
+/*     int startX = 4;             // Edge padding */
+/*     int startY = 327 - 2 - 49;  // Bottom edge padding and one button height */
+    
+/*     btns[0] = MAKE_RECT_BTN(startX, startY, 'C'); */
+
+/*     ... */
+
+/*     btns[9] = MAKE_SQRE_BTN(startX, startY - 2 * rowHeight,'1') */
+
+/*     ... blah blah blah */
+/* } */
+/* #endif */
+
 void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
     
     btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
@@ -143,11 +168,12 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '9', true);
 }
 
+
 /* NOTE: we calculated this, this is the lower bound for number of
  16pixel (@font size 20) letters that fit on 200px window */
-
 #define MAX_EXPR_LENGTH 18
 
+#ifndef READ_TEST
 int main(void) {
   int fontSize = 18;
   int fontWidth = 9;
@@ -224,4 +250,27 @@ int main(void) {
   CloseWindow();
 
   return 0;
+}
+#else
+int main(void) {
+  char *expr = "1+2*(2+5)/1*2*(24-5)";
+  printf("EVAL TEST: %s\n", evaluated_string_from_expr(expr));
+}
+#endif
+
+char *evaluated_string_from_expr(char *expr) {
+  /*
+    TODO NOTE: what actual calculators do is transition to scientific notation
+    in the case of a window overflow, what this should actually do is format
+    with %s when the answer string length exceeds MAX_EXPR_LENGTH.
+  */
+  char *answer       = (char *) malloc(sizeof(char) * MAX_TOKEN_STREAM);
+  TokenStream ts     = lex_expr(expr);
+  ASTBinaryNode *ast = parse_stream(&ts);
+  Token result       = eval_ast(ast);
+  if (read_from_eval(answer, result) < 0) {
+    fprintf(stderr, "WTF from %s()\n", __func__);
+    exit(EXIT_FAILURE);
+  }
+  return answer;
 }

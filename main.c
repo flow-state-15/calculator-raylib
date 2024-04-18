@@ -44,7 +44,7 @@ void init_window() {
   SetTargetFPS(15);
 }
 
-void draw_button_grid() {
+Button *draw_button_grid() {
     int topOffset = 88 + 4;  // Height of top areas + edge padding
 
     // Row and column setup
@@ -56,30 +56,41 @@ void draw_button_grid() {
     int startY = 330 - 4 - 49;  // Bottom edge padding and one button height
     
     // Operator buttons on the right
-    Vector2 divide_button = DrawSquare(startX + (colWidth * 3), startY - rowHeight, 49, LIGHTGRAY, "/");
-    Vector2 multiply_button = DrawSquare(startX + (colWidth * 3), startY - 2 * rowHeight, 49, LIGHTGRAY, "*");
-    Vector2 minus_button = DrawSquare(startX + (colWidth * 3), startY - 3 * rowHeight, 49, LIGHTGRAY, "-");
-    Vector2 plus_button = DrawSquare(startX + (colWidth * 3), startY - 4 * rowHeight, 49, LIGHTGRAY, "+");
+    Button divide_button = DrawSquare(startX + (colWidth * 3), startY - rowHeight, 49, LIGHTGRAY, "/");
+    Button multiply_button = DrawSquare(startX + (colWidth * 3), startY - 2 * rowHeight, 49, LIGHTGRAY, "*");
+    Button minus_button = DrawSquare(startX + (colWidth * 3), startY - 3 * rowHeight, 49, LIGHTGRAY, "-");
+    Button plus_button = DrawSquare(startX + (colWidth * 3), startY - 4 * rowHeight, 49, LIGHTGRAY, "+");
     
     // Special function buttons
-    Vector2 clear_button = DrawDSquare(startX, startY, 49, LIGHTGRAY, "C");
-    Vector2 equals_button = DrawDSquare(startX + (colWidth * 2), startY, 49, LIGHTGRAY, "=");
-    Vector2 open_paren_button = DrawSquare(startX, startY - rowHeight, 49, LIGHTGRAY, "(");
-    Vector2 close_paren_button = DrawSquare(startX + (colWidth * 2), startY - rowHeight, 49, LIGHTGRAY, ")");
+    Button clear_button = DrawDSquare(startX, startY, 49, LIGHTGRAY, "C");
+    Button equals_button = DrawDSquare(startX + (colWidth * 2), startY, 49, LIGHTGRAY, "=");
+    Button open_paren_button = DrawSquare(startX, startY - rowHeight, 49, LIGHTGRAY, "(");
+    Button close_paren_button = DrawSquare(startX + (colWidth * 2), startY - rowHeight, 49, LIGHTGRAY, ")");
 
     // Number buttons
-    Vector2 zero_button = DrawSquare(startX + colWidth, startY - rowHeight, 49, LIGHTGRAY, "0");
-    Vector2 one_button = DrawSquare(startX, startY - 2 * rowHeight, 49, LIGHTGRAY, "1");
-    Vector2 two_button = DrawSquare(startX + colWidth, startY - 2 * rowHeight, 49, LIGHTGRAY, "2");
-    Vector2 three_button = DrawSquare(startX + (2 * colWidth), startY - 2 * rowHeight, 49, LIGHTGRAY, "3");
-    Vector2 four_button = DrawSquare(startX, startY - 3 * rowHeight, 49, LIGHTGRAY, "4");
-    Vector2 five_button = DrawSquare(startX + colWidth, startY - 3 * rowHeight, 49, LIGHTGRAY, "5");
-    Vector2 six_button = DrawSquare(startX + (2 * colWidth), startY - 3 * rowHeight, 49, LIGHTGRAY, "6");
-    Vector2 seven_button = DrawSquare(startX, startY - 4 * rowHeight, 49, LIGHTGRAY, "7");
-    Vector2 eight_button = DrawSquare(startX + colWidth, startY - 4 * rowHeight, 49, LIGHTGRAY, "8");
-    Vector2 nine_button = DrawSquare(startX + (colWidth * 2), startY - 4 * rowHeight, 49, LIGHTGRAY, "9");
+    Button zero_button = DrawSquare(startX + colWidth, startY - rowHeight, 49, LIGHTGRAY, "0");
+    Button one_button = DrawSquare(startX, startY - 2 * rowHeight, 49, LIGHTGRAY, "1");
+    Button two_button = DrawSquare(startX + colWidth, startY - 2 * rowHeight, 49, LIGHTGRAY, "2");
+    Button three_button = DrawSquare(startX + (2 * colWidth), startY - 2 * rowHeight, 49, LIGHTGRAY, "3");
+    Button four_button = DrawSquare(startX, startY - 3 * rowHeight, 49, LIGHTGRAY, "4");
+    Button five_button = DrawSquare(startX + colWidth, startY - 3 * rowHeight, 49, LIGHTGRAY, "5");
+    Button six_button = DrawSquare(startX + (2 * colWidth), startY - 3 * rowHeight, 49, LIGHTGRAY, "6");
+    Button seven_button = DrawSquare(startX, startY - 4 * rowHeight, 49, LIGHTGRAY, "7");
+    Button eight_button = DrawSquare(startX + colWidth, startY - 4 * rowHeight, 49, LIGHTGRAY, "8");
+    Button nine_button = DrawSquare(startX + (colWidth * 2), startY - 4 * rowHeight, 49, LIGHTGRAY, "9");
+
+    return btns;
 }
 
+Button find_collision(Vector2 click, Button *btns) {
+  for (int i = 0; i < 17; i++) {
+    Button btn = btns[i];
+    if (CheckCollisionPointRec(Vector2 click, Rectangle btn->rect)) {
+      return btn;
+    }
+  }
+  return NULL;
+}
 
 int main(void) {
   // const char *py_cmd = "python ./hello.py";
@@ -99,7 +110,7 @@ int main(void) {
 
   while (!WindowShouldClose()) {
     bool isFocused = IsWindowFocused();
-    draw_button_grid();
+    Button *btns = draw_button_grid();
 
     if (isFocused && !wasFocused) {
       printf("Window focused\n");
@@ -112,7 +123,14 @@ int main(void) {
 
     if (isFocused) {
       DrawText("Hello, World!", 10, 10, 20, DARKGRAY);
+      Vector2 mousePos = GetMousePosition();
+      Button btn_coll = find_collision(mousePos, btns);
+      if (btn_coll != NULL) {
+        printf("found collision: %s\n", btn_coll->tkn);
+      } else {
+        printf("No collision, NULL\n");
       
+      }
     } else {
       sleep_program(20);
     }

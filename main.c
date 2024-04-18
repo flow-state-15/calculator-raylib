@@ -20,6 +20,18 @@ struct AppState {
   int result;
 };
 
+#define WIN_WIDTH 208
+#define WIN_HEIGHT 327
+#define FPS_TARGET 15
+#define ROW_HEIGHT 50
+#define COL_WIDTH 50
+#define EDGE_PADDING 4
+
+// Calculate the start positions (x, y) for the first row at the bottom
+int startX = EDGE_PADDING;  
+int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
+/* int topOffset = 88 + 4;  // Height of top areas + edge padding */
+
 void sleep_program(int ms) {
 #ifdef _WIN32
   Sleep(ms);
@@ -46,8 +58,8 @@ void DrawDSquare(int posX, int posY, int size, Color color, char text) {
 
 void init_window() {
   // init window
-  InitWindow(208, 327, APP_NAME);
-  SetTargetFPS(15);
+  InitWindow(WIN_WIDTH, WIN_HEIGHT, APP_NAME);
+  SetTargetFPS(FPS_TARGET);
 }
 
 void draw_button_grid(Button *btns) {
@@ -90,63 +102,58 @@ make_btn(int x, int y, int sz, Color c, char tkn, bool is_square)
 }
 
 void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
-    /* int topOffset = 88 + 4;  // Height of top areas + edge padding */
-
-    // Row and column setup
-    int rowHeight = 50;
-    int colWidth = 50;
-    
-    // Calculate the start positions (x, y) for the first row at the bottom
-    int startX = 4;  // Edge padding
-    int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
     
     btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
-    btns[1] = make_btn(startX + (colWidth * 2), startY, 49, LIGHTGRAY, '=',
+    btns[1] = make_btn(startX + (COL_WIDTH * 2), startY, 49, LIGHTGRAY, '=',
                        false);
-    btns[2] = make_btn(startX + (colWidth * 3), startY - rowHeight,
+    btns[2] = make_btn(startX + (COL_WIDTH * 3), startY - ROW_HEIGHT,
              49, LIGHTGRAY, '/', true);
-    btns[3] = make_btn(startX + (colWidth * 3), startY - 2 * rowHeight,
+    btns[3] = make_btn(startX + (COL_WIDTH * 3), startY - 2 * ROW_HEIGHT,
              49, LIGHTGRAY, '*', true);
-    btns[4] = make_btn(startX + (colWidth * 3), startY - 3 * rowHeight,
+    btns[4] = make_btn(startX + (COL_WIDTH * 3), startY - 3 * ROW_HEIGHT,
              49, LIGHTGRAY, '-', true);
-    btns[5] = make_btn(startX + (colWidth * 3), startY - 4 * rowHeight,
+    btns[5] = make_btn(startX + (COL_WIDTH * 3), startY - 4 * ROW_HEIGHT,
              49, LIGHTGRAY, '+', true);
-    btns[6] = make_btn(startX, startY - rowHeight,
+    btns[6] = make_btn(startX, startY - ROW_HEIGHT,
              49, LIGHTGRAY, '(', true);
-    btns[7] = make_btn(startX + (colWidth * 2), startY - rowHeight,
+    btns[7] = make_btn(startX + (COL_WIDTH * 2), startY - ROW_HEIGHT,
              49, LIGHTGRAY, ')', true);
-    btns[8] = make_btn(startX + colWidth, startY - rowHeight,
+    btns[8] = make_btn(startX + COL_WIDTH, startY - ROW_HEIGHT,
              49, LIGHTGRAY, '0', true);
-    btns[9] = make_btn(startX, startY - 2 * rowHeight,
+    btns[9] = make_btn(startX, startY - 2 * ROW_HEIGHT,
              49, LIGHTGRAY, '1', true);
-    btns[10] = make_btn(startX + colWidth, startY - 2 * rowHeight,
+    btns[10] = make_btn(startX + COL_WIDTH, startY - 2 * ROW_HEIGHT,
              49, LIGHTGRAY, '2', true);
-    btns[11] = make_btn(startX + 2 * colWidth, startY - 2 * rowHeight,
+    btns[11] = make_btn(startX + 2 * COL_WIDTH, startY - 2 * ROW_HEIGHT,
              49, LIGHTGRAY, '3', true);
-    btns[12] = make_btn(startX, startY - 3 * rowHeight,
+    btns[12] = make_btn(startX, startY - 3 * ROW_HEIGHT,
              49, LIGHTGRAY, '4', true);
-    btns[13] = make_btn(startX + colWidth, startY - 3 * rowHeight,
+    btns[13] = make_btn(startX + COL_WIDTH, startY - 3 * ROW_HEIGHT,
              49, LIGHTGRAY, '5', true);
-    btns[14] = make_btn(startX + 2 * colWidth, startY - 3 * rowHeight,
+    btns[14] = make_btn(startX + 2 * COL_WIDTH, startY - 3 * ROW_HEIGHT,
              49, LIGHTGRAY, '6', true);
-    btns[15] = make_btn(startX, startY - 4 * rowHeight,
+    btns[15] = make_btn(startX, startY - 4 * ROW_HEIGHT,
              49, LIGHTGRAY, '7', true);
-    btns[16] = make_btn(startX + colWidth, startY - 4 * rowHeight,
+    btns[16] = make_btn(startX + COL_WIDTH, startY - 4 * ROW_HEIGHT,
              49, LIGHTGRAY, '8', true);
-    btns[17] = make_btn(startX + (colWidth * 2), startY - 4 * rowHeight,
+    btns[17] = make_btn(startX + (COL_WIDTH * 2), startY - 4 * ROW_HEIGHT,
              49, LIGHTGRAY, '9', true);
 }
 
 /* NOTE: we calculated this, this is the lower bound for number of
  16pixel (@font size 20) letters that fit on 200px window */
 
-#define MAX_EXPR_LENGTH 12
+#define MAX_EXPR_LENGTH 18
+
 int main(void) {
+  int fontSize = 18;
   Button buttons[NUMBER_OF_BUTTONS];
   init_button_geo(buttons);
   print_buttons(buttons);
   
-  char expr[MAX_EXPR_LENGTH];
+  char expr[MAX_EXPR_LENGTH + 1];
+  int expr_len = 0;
+  expr[expr_len] = '0';
 
   init_window();
   // init_button_geo
@@ -163,19 +170,33 @@ int main(void) {
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
+    DrawText(expr, 190, 10, fontSize, DARKGRAY);
+    // if (expr_len == 0) {
+    // }
 
     if (isFocused) {
-      DrawText("window focused", 10, 10, 20, DARKGRAY);
       // todo: when calculating result, change font of input to lighter color
       // todo: when calculating result, change font of result to darker color (darkgrey)
-      Vector2 mousePos = GetMousePosition();
-      char tkn = find_collision(mousePos, buttons);
-      if (tkn != '\0') {
-        printf("found collision: %c\n", tkn);
-      } else {
-        printf("No collision, NULL\n");
-      }
+
+      // get mouse down first, then run collision logic
+      if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 mousePos = GetMousePosition();
+        char tkn = find_collision(mousePos, buttons);
+        if (tkn != '\0') {
+          printf("found collision: %c\n", tkn);
+          if (expr_len >= MAX_EXPR_LENGTH) {
+            printf("hit max expr len\n");
+            expr[expr_len] = '\0';
+            continue;
+          }
+
+          expr[expr_len] = tkn;
+          expr_len++;
+        } else {
+          printf("No collision, NULL\n");
+        }
       
+      }
     } else {
       sleep_program(20);
     }

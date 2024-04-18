@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include "./lib/evaluate.h"
 
 #define APP_NAME "Simple Calculator"
 #define NUMBER_OF_BUTTONS 18
@@ -101,7 +102,8 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
     int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
     
     btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
-    btns[1] = make_btn(startX + (colWidth * 2), startY, 49, LIGHTGRAY, '=', false);
+    btns[1] = make_btn(startX + (colWidth * 2), startY, 49, LIGHTGRAY, '=',
+                       false);
     btns[2] = make_btn(startX + (colWidth * 3), startY - rowHeight,
              49, LIGHTGRAY, '/', true);
     btns[3] = make_btn(startX + (colWidth * 3), startY - 2 * rowHeight,
@@ -136,10 +138,16 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '9', true);
 }
 
+/* NOTE: we calculated this, this is the lower bound for number of
+ 16pixel (@font size 20) letters that fit on 200px window */
+#define MAX_EXPR_LENGTH 12
+
 int main(void) {
   Button buttons[NUMBER_OF_BUTTONS];
   init_button_geo(buttons);
   print_buttons(buttons);
+  
+  char expr[MAX_EXPR_LENGTH];
 
   init_window();
   // init_button_geo

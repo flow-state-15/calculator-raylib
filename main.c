@@ -92,62 +92,28 @@ make_btn(int x, int y, int sz, Color c, char tkn, bool is_square)
 
 
 // refactor idea
-#if 0
-#define SQUARE_WIDTH 49
-#define MAKE_SQRE_BTN(X, Y, TKN) \
-  make_btn(X, Y, SQUARE_WIDTH, LIGHTGRAY, TKN, true) \
-
-#define MAKE_RECT_BTN(X, Y, TKN) \
-  make_btn(X, Y, SQUARE_WIDTH, TKN, false) \
-void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
-    /* int topOffset = 88 + 4;  // Height of top areas + edge padding */
-
-    // Row and column setup
-    int rowHeight = 50;
-    int colWidth = 50;
+/* #if 0 */
+/* #define SQUARE_WIDTH 49 */
+/* #define MAKE_SQRE_BTN(X, Y, TKN)                     \ */
+/*   make_btn(X, Y, SQUARE_WIDTH, LIGHTGRAY, TKN, true) \ */
+/* #define MAKE_RECT_BTN(X, Y, TKN)           \ */
+/*   make_btn(X, Y, SQUARE_WIDTH, TKN, false) \ */
+/* void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) { */
+/*     int rowHeight = 50; */
+/*     int colWidth = 50; */
     
-    // Calculate the start positions (x, y) for the first row at the bottom
-    int startX = 4;  // Edge padding
-    int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
+/*     int startX = 4;             // Edge padding */
+/*     int startY = 327 - 2 - 49;  // Bottom edge padding and one button height */
     
-    btns[0] = MAKE_RECT_BTN(startX, startY, 'C');
-    btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
-    btns[1] = make_btn(startX + (colWidth * 2), startY, 49, LIGHTGRAY, '=',
-                       false);
-    btns[2] = make_btn(startX + (colWidth * 3), startY - rowHeight,
-             49, LIGHTGRAY, '/', true);
-    btns[3] = make_btn(startX + (colWidth * 3), startY - 2 * rowHeight,
-             49, LIGHTGRAY, '*', true);
-    btns[4] = make_btn(startX + (colWidth * 3), startY - 3 * rowHeight,
-             49, LIGHTGRAY, '-', true);
-    btns[5] = make_btn(startX + (colWidth * 3), startY - 4 * rowHeight,
-             49, LIGHTGRAY, '+', true);
-    btns[6] = make_btn(startX, startY - rowHeight,
-             49, LIGHTGRAY, '(', true);
-    btns[7] = make_btn(startX + (colWidth * 2), startY - rowHeight,
-             49, LIGHTGRAY, ')', true);
-    btns[8] = make_btn(startX + colWidth, startY - rowHeight,
-             49, LIGHTGRAY, '0', true);
-    btns[9] = make_btn(startX, startY - 2 * rowHeight,
-             49, LIGHTGRAY, '1', true);
-    btns[10] = make_btn(startX + colWidth, startY - 2 * rowHeight,
-             49, LIGHTGRAY, '2', true);
-    btns[11] = make_btn(startX + 2 * colWidth, startY - 2 * rowHeight,
-             49, LIGHTGRAY, '3', true);
-    btns[12] = make_btn(startX, startY - 3 * rowHeight,
-             49, LIGHTGRAY, '4', true);
-    btns[13] = make_btn(startX + colWidth, startY - 3 * rowHeight,
-             49, LIGHTGRAY, '5', true);
-    btns[14] = make_btn(startX + 2 * colWidth, startY - 3 * rowHeight,
-             49, LIGHTGRAY, '6', true);
-    btns[15] = make_btn(startX, startY - 4 * rowHeight,
-             49, LIGHTGRAY, '7', true);
-    btns[16] = make_btn(startX + colWidth, startY - 4 * rowHeight,
-             49, LIGHTGRAY, '8', true);
-    btns[17] = make_btn(startX + (colWidth * 2), startY - 4 * rowHeight,
-             49, LIGHTGRAY, '9', true);
-}
-#endif
+/*     btns[0] = MAKE_RECT_BTN(startX, startY, 'C'); */
+
+/*     ... */
+
+/*     btns[9] = MAKE_SQRE_BTN(startX, startY - 2 * rowHeight,'1') */
+
+/*     ... blah blah blah */
+/* } */
+/* #endif */
 
 void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
     /* int topOffset = 88 + 4;  // Height of top areas + edge padding */

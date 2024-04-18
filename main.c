@@ -39,9 +39,9 @@ void DrawSquare(int posX, int posY, int size, Color color, char text) {
 }
 
 void DrawDSquare(int posX, int posY, int size, Color color, char text) {
-  DrawRectangle(posX, posY, size * 2, size, color);
+  DrawRectangle(posX, posY, (size * 2) + 1, size, color);
   char str[2] = {text, '\0'};
-  DrawText(str, posX + 20, posY + 34, 20, DARKGRAY);
+  DrawText(str, posX + 42, posY + 17, 20, DARKGRAY);
 }
 
 void init_window() {
@@ -101,7 +101,7 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
     int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
     
     btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
-    btns[1] = make_btn(startX + colWidth, startY, 49, LIGHTGRAY, '=', false);
+    btns[1] = make_btn(startX + (colWidth * 2), startY, 49, LIGHTGRAY, '=', false);
     btns[2] = make_btn(startX + (colWidth * 3), startY - rowHeight,
              49, LIGHTGRAY, '/', true);
     btns[3] = make_btn(startX + (colWidth * 3), startY - 2 * rowHeight,
@@ -110,7 +110,7 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '-', true);
     btns[5] = make_btn(startX + (colWidth * 3), startY - 4 * rowHeight,
              49, LIGHTGRAY, '+', true);
-    btns[6] = make_btn(startX + colWidth, startY - rowHeight,
+    btns[6] = make_btn(startX, startY - rowHeight,
              49, LIGHTGRAY, '(', true);
     btns[7] = make_btn(startX + (colWidth * 2), startY - rowHeight,
              49, LIGHTGRAY, ')', true);

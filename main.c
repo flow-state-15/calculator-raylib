@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include "./lib/evaluate.h"
 
 #define APP_NAME "Simple Calculator"
 #define NUMBER_OF_BUTTONS 18
@@ -139,8 +140,8 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
 
 /* NOTE: we calculated this, this is the lower bound for number of
  16pixel (@font size 20) letters that fit on 200px window */
-
 #define MAX_EXPR_LENGTH 12
+
 int main(void) {
   Button buttons[NUMBER_OF_BUTTONS];
   init_button_geo(buttons);

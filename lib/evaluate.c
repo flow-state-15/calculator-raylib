@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+static bool found_numeric(ASTBinaryNode *n) {
+  return (n->tkn.kind == NUMERIC_F || n->tkn.kind == NUMERIC_I);
+}
+
 void token_append(TokenStream *stream, Token tk) {
   if (stream->n_tks >= stream->cap) PANIC(EXIT_STREAM_OVERFLOW);
   stream->tks[stream->n_tks++] = tk;

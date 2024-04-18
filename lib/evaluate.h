@@ -56,9 +56,5 @@ static inline token_kind set_kind(Token *t1, Token *t2) {
 static inline double as_float(Token *tkn) {
   return tkn->kind == NUMERIC_F ? tkn->value.fval : (double) tkn->value.ival;
 }
-static bool found_numeric(ASTBinaryNode *n) {
-  return (n->tkn.kind == NUMERIC_F || n->tkn.kind == NUMERIC_I);
-}
-
 // END: EVAL
 #endif //EVALUATE_H_

@@ -138,10 +138,13 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '9', true);
 }
 
+
 /* NOTE: we calculated this, this is the lower bound for number of
  16pixel (@font size 20) letters that fit on 200px window */
 #define MAX_EXPR_LENGTH 12
+char *evaluated_string_from_expr(char *); // FREE ME
 
+#ifndef READ_TEST
 int main(void) {
   Button buttons[NUMBER_OF_BUTTONS];
   init_button_geo(buttons);
@@ -188,4 +191,27 @@ int main(void) {
   CloseWindow();
 
   return 0;
+}
+#else
+int main(void) {
+  char *expr = "1+2*(2+5)/1*2*(24-5)";
+  printf("EVAL TEST: %s\n", evaluated_string_from_expr(expr));
+}
+#endif
+
+char *evaluated_string_from_expr(char *expr) {
+  /*
+    TODO NOTE: what actual calculators do is transition to scientific notation
+    in the case of a window overflow, what this should actually do is format
+    with %s when the answer string length exceeds MAX_EXPR_LENGTH.
+  */
+  char *answer       = (char *) malloc(sizeof(char) * MAX_TOKEN_STREAM);
+  TokenStream ts     = lex_expr(expr);
+  ASTBinaryNode *ast = parse_stream(&ts);
+  Token result       = eval_ast(ast);
+  if (read_from_eval(answer, result) < 0) {
+    fprintf(stderr, "WTF from %s()\n", __func__);
+    exit(EXIT_FAILURE);
+  }
+  return answer;
 }

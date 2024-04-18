@@ -16,6 +16,9 @@ run:
 main: evaluate.o main.c
 	$(CC) $(CFLAGS) $(RLFLAGS) main.c -o $(EXE) $(LIB)
 
+eval_test: evaluate.o main.c
+	$(CC) $(CFLAGS) $(RLFLAGS) main.c -o $(EXE) $(LIB) -DREAD_TEST
+
 evaluate.o: ./lib/evaluate.c
 	$(CC) $(LIBFLAGS) -c ./lib/evaluate.c -o $(LIB)
 

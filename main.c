@@ -3,6 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include "./lib/evaluate.h"
 
 #define APP_NAME "Simple Calculator"
 #define NUMBER_OF_BUTTONS 18

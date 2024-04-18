@@ -34,18 +34,18 @@ Vector2 DrawSquare(int posX, int posY, int size, Color color, char *text) {
 
 Vector2 DrawDSquare(int posX, int posY, int size, Color color, char *text) {
   DrawRectangle(posX, posY, size * 2, size, color);
-  DrawText(text, posX + 20, posY + 34, 20, DARKGRAY);
+  DrawText(text, posX + 40, posY + 17, 20, DARKGRAY);
   return (Vector2){posX, posY};
 }
 
 void init_window() {
   // init window
-  InitWindow(208, 327, APP_NAME);
+  InitWindow(208, 330, APP_NAME);
   SetTargetFPS(15);
 }
 
 void draw_button_grid() {
-    int topOffset = 88 + 2;  // Height of top areas + edge padding
+    int topOffset = 88 + 4;  // Height of top areas + edge padding
 
     // Row and column setup
     int rowHeight = 50;
@@ -53,7 +53,7 @@ void draw_button_grid() {
     
     // Calculate the start positions (x, y) for the first row at the bottom
     int startX = 4;  // Edge padding
-    int startY = 327 - 2 - 49;  // Bottom edge padding and one button height
+    int startY = 330 - 4 - 49;  // Bottom edge padding and one button height
     
     // Operator buttons on the right
     Vector2 divide_button = DrawSquare(startX + (colWidth * 3), startY - rowHeight, 49, LIGHTGRAY, "/");
@@ -63,18 +63,18 @@ void draw_button_grid() {
     
     // Special function buttons
     Vector2 clear_button = DrawDSquare(startX, startY, 49, LIGHTGRAY, "C");
-    Vector2 equals_button = DrawDSquare(startX + colWidth, startY, 49, LIGHTGRAY, "=");
-    Vector2 open_paren_button = DrawSquare(startX + colWidth, startY - rowHeight, 49, LIGHTGRAY, "(");
+    Vector2 equals_button = DrawDSquare(startX + (colWidth * 2), startY, 49, LIGHTGRAY, "=");
+    Vector2 open_paren_button = DrawSquare(startX, startY - rowHeight, 49, LIGHTGRAY, "(");
     Vector2 close_paren_button = DrawSquare(startX + (colWidth * 2), startY - rowHeight, 49, LIGHTGRAY, ")");
 
     // Number buttons
     Vector2 zero_button = DrawSquare(startX + colWidth, startY - rowHeight, 49, LIGHTGRAY, "0");
     Vector2 one_button = DrawSquare(startX, startY - 2 * rowHeight, 49, LIGHTGRAY, "1");
     Vector2 two_button = DrawSquare(startX + colWidth, startY - 2 * rowHeight, 49, LIGHTGRAY, "2");
-    Vector2 three_button = DrawSquare(startX + 2 * colWidth, startY - 2 * rowHeight, 49, LIGHTGRAY, "3");
+    Vector2 three_button = DrawSquare(startX + (2 * colWidth), startY - 2 * rowHeight, 49, LIGHTGRAY, "3");
     Vector2 four_button = DrawSquare(startX, startY - 3 * rowHeight, 49, LIGHTGRAY, "4");
     Vector2 five_button = DrawSquare(startX + colWidth, startY - 3 * rowHeight, 49, LIGHTGRAY, "5");
-    Vector2 six_button = DrawSquare(startX + 2 * colWidth, startY - 3 * rowHeight, 49, LIGHTGRAY, "6");
+    Vector2 six_button = DrawSquare(startX + (2 * colWidth), startY - 3 * rowHeight, 49, LIGHTGRAY, "6");
     Vector2 seven_button = DrawSquare(startX, startY - 4 * rowHeight, 49, LIGHTGRAY, "7");
     Vector2 eight_button = DrawSquare(startX + colWidth, startY - 4 * rowHeight, 49, LIGHTGRAY, "8");
     Vector2 nine_button = DrawSquare(startX + (colWidth * 2), startY - 4 * rowHeight, 49, LIGHTGRAY, "9");

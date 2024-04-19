@@ -177,55 +177,6 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '9', true);
 }
 
-// todo: bugged - it pads prev operators due to loop. remove.
-// takes && returns char * when done
-int pad_expr(char *buf) {
-  printf("str: ");
-  for (int i=0; i<strlen(buf); i++) {
-    printf("%c", buf[i]);
-  }
-  printf("\n");
-  char new_buf[MAX_EXPR_LENGTH + 1] = {'\0'};
-  int new_buf_char_pos = 0;
-  for (int i=0; i < strlen(buf); i++) {
-    if (buf[i] == '+' || buf[i] == '-' || buf[i] == '*' || buf[i] == '/') {
-      new_buf[new_buf_char_pos++] = ' '; new_buf[new_buf_char_pos++] = buf[i]; new_buf[new_buf_char_pos++] = ' ';
-    } else {
-      new_buf[new_buf_char_pos] = buf[i];
-      new_buf_char_pos++;
-    }
-  }
-  printf("new_buf: ");
-  for (int i=0; i<strlen(new_buf); i++) {
-    printf("%c", new_buf[i]);
-  }
-  printf("\n");
-  memccpy(buf, &new_buf, MAX_EXPR_LENGTH + 1, sizeof(char) * (MAX_EXPR_LENGTH + 1));
-  printf("after memcpy: ");
-  for (int i=0; i<strlen(buf); i++) {
-    printf("%c", buf[i]);
-  }
-  printf("\n");
-  return new_buf_char_pos;
-}
-
-// todo: do not use this function, it is not needed
-size_t pad_op(char *buf, char tkn) {
-  size_t len = strlen(buf);
-  if (tkn == '+' || tkn == '-' || tkn == '*' || tkn == '/') {
-    buf[len + 1] = ' ';
-    buf[len + 2] = tkn;
-    buf[len + 3] = ' ';
-    printf("expr: ");
-    for (int i=0; i<strlen(buf); i++) {
-      printf("%c", buf[i]);
-    }
-    printf("\n");
-    return len + 3;
-  }
-  return len;
-}
-
 #ifndef READ_TEST
 int main(void) {
   int fontSize = 18;
@@ -261,7 +212,6 @@ int main(void) {
     if (isFocused) {
       // todo: when calculating result, change font of input to lighter color
       // todo: when calculating result, change font of result to darker color (darkgrey)
-      // todo: insert space if operator is pressed
 
       // get mouse down first, then run collision logic
       if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {

@@ -54,13 +54,12 @@ void DrawSquare(int posX, int posY, int size, Color color, char text) {
 }
 
 void DrawDSquare(int posX, int posY, int size, Color color, char text) {
-  DrawRectangle(posX, posY, (size * 2) + 1, size, color);
+  DrawRectangle(posX, posY, size, size, color);
   char str[2] = {text, '\0'};
   DrawText(str, posX + 42, posY + 17, 20, DARKGRAY);
 }
 
 void init_window() {
-  // init window
   InitWindow(WIN_WIDTH, WIN_HEIGHT, APP_NAME);
   SetTargetFPS(FPS_TARGET);
 }
@@ -99,8 +98,14 @@ static void print_buttons(Button btns[NUMBER_OF_BUTTONS]) {
 static Button
 make_btn(int x, int y, int sz, Color c, char tkn, bool is_square)
 {
-  Rectangle r = {.x = (float) x, .y = (float) y,
-                 .width = (float) sz, .height = (float) sz};
+  Rectangle r;
+  if (is_square) {
+    r = (Rectangle) {.x = (float) x, .y = (float) y,
+                     .width = (float) sz, .height = (float) sz};
+  } else {
+    r = (Rectangle) {.x = (float) x, .y = (float) y,
+                     .width = (float) (sz * 2) + 1, .height = (float) sz};
+  }
   return (Button) {.rect = r, .color = c, .tkn = tkn, .is_square = is_square};
 }
 

@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
@@ -7,6 +8,9 @@
 
 #define APP_NAME "Simple Calculator"
 #define NUMBER_OF_BUTTONS 18
+/* NOTE: we calculated this, this is the lower bound for number of
+ 16pixel (@font size 20) letters that fit on 200px window */
+#define MAX_EXPR_LENGTH 18
 
 static bool wasFocused = true;
 
@@ -47,6 +51,11 @@ void sleep_program(int ms) {
 #endif
 }
 
+void init_window() {
+  InitWindow(WIN_WIDTH, WIN_HEIGHT, APP_NAME);
+  SetTargetFPS(FPS_TARGET);
+}
+
 void DrawSquare(int posX, int posY, int size, Color color, char text) {
   DrawRectangle(posX, posY, size, size, color);
   char str[2] = {text, '\0'};
@@ -57,11 +66,6 @@ void DrawDSquare(int posX, int posY, int size, Color color, char text) {
   DrawRectangle(posX, posY, size, size, color);
   char str[2] = {text, '\0'};
   DrawText(str, posX + 42, posY + 17, 20, DARKGRAY);
-}
-
-void init_window() {
-  InitWindow(WIN_WIDTH, WIN_HEIGHT, APP_NAME);
-  SetTargetFPS(FPS_TARGET);
 }
 
 void draw_button_grid(Button *btns) {
@@ -173,11 +177,6 @@ void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
              49, LIGHTGRAY, '9', true);
 }
 
-
-/* NOTE: we calculated this, this is the lower bound for number of
- 16pixel (@font size 20) letters that fit on 200px window */
-#define MAX_EXPR_LENGTH 18
-
 #ifndef READ_TEST
 int main(void) {
   int fontSize = 18;
@@ -189,7 +188,7 @@ int main(void) {
   init_button_geo(buttons);
   print_buttons(buttons);
   
-  char expr[MAX_EXPR_LENGTH + 1];
+  char expr[MAX_EXPR_LENGTH + 1] = {'\0'};
   int expr_len = 0;
   expr[expr_len] = '0';
 
@@ -213,39 +212,51 @@ int main(void) {
     if (isFocused) {
       // todo: when calculating result, change font of input to lighter color
       // todo: when calculating result, change font of result to darker color (darkgrey)
-      // todo: insert space if operator is pressed
 
       // get mouse down first, then run collision logic
       if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mousePos = GetMousePosition();
         char tkn = find_collision(mousePos, buttons);
+        if (expr_len >= MAX_EXPR_LENGTH) {
+          // todo: handle this better
+          printf("hit max expr len\n");
+          expr[expr_len] = '\0';
+          continue;
+        }
+
         printf("tkn: %c\n", tkn);
         if (tkn != '\0' && tkn != 'C' && tkn != '=') {
           printf("found collision: %c\n", tkn);
-          if (expr_len >= MAX_EXPR_LENGTH) {
-            printf("hit max expr len\n");
-            expr[expr_len] = '\0';
-            continue;
+          if (tkn == '+' || tkn == '-' || tkn == '*' || tkn == '/') {
+            expr[expr_len++] = ' ';
+            expr[expr_len++] = tkn;
+            expr[expr_len++] = ' ';
+            exprPosX -= fontWidth * 3;
+          } else {
+            expr[expr_len] = tkn;
+            expr_len++;
+            exprPosX -= (expr_len > 1) ? fontWidth : 0;
           }
-
-          expr[expr_len] = tkn;
-          expr_len++;
-          // todo: repositioning too early if first click
-          exprPosX -= fontWidth;
         } else if (tkn == 'C') {
-          // todo bug: 2nd half of dbl squares not being detected in collision
           memset(expr, 0, sizeof(char) * (MAX_EXPR_LENGTH + 1));
           expr_len = 0;
           expr[expr_len] = '0';
           exprPosX = EXPR_POS_X;
           printf("on C, what is expr: %s\n", expr);
+        } else if (tkn == '=') {
+          printf("expr: ");
+          for (int i=0; i<strlen(expr); i++) {
+            printf("%c", expr[i]);
+          }
+          printf("\n");
+          printf("evaluating...\n");
         } else {
           printf("No collision, NULL\n");
         }
       
       }
     } else {
-      sleep_program(20);
+      // sleep_program(20);
     }
 
     EndDrawing();

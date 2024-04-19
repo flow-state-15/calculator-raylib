@@ -10,7 +10,7 @@
 #define NUMBER_OF_BUTTONS 18
 /* NOTE: we calculated this, this is the lower bound for number of
  16pixel (@font size 20) letters that fit on 200px window */
-#define MAX_EXPR_LENGTH 18
+#define MAX_EXPR_LENGTH 50
 
 static bool wasFocused = true;
 
@@ -28,7 +28,7 @@ struct AppState {
 
 #define WIN_WIDTH 208
 #define WIN_HEIGHT 327
-#define FPS_TARGET 15
+#define FPS_TARGET 60
 #define ROW_HEIGHT 50
 #define COL_WIDTH 50
 #define EDGE_PADDING 4
@@ -195,7 +195,6 @@ int main(void) {
 
   while (!WindowShouldClose()) {
     bool isFocused = IsWindowFocused();
-    draw_button_grid(buttons);
 
     if (isFocused && !wasFocused) {
       printf("Window focused\n");
@@ -203,11 +202,6 @@ int main(void) {
       printf("Window unfocused\n");
     }
 
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-
-    // render expr to screen
-    DrawText(expr, exprPosX, 10, fontSize, DARKGRAY);
 
     if (isFocused) {
       // todo: when calculating result, change font of input to lighter color
@@ -217,7 +211,7 @@ int main(void) {
       if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         Vector2 mousePos = GetMousePosition();
         char tkn = find_collision(mousePos, buttons);
-        if (expr_len >= MAX_EXPR_LENGTH) {
+        if (fontSize <= 10) {
           // todo: handle this better
           printf("hit max expr len\n");
           expr[expr_len] = '\0';
@@ -227,11 +221,23 @@ int main(void) {
         printf("tkn: %c\n", tkn);
         if (tkn != '\0' && tkn != 'C' && tkn != '=') {
           printf("found collision: %c\n", tkn);
+          
+          // todo: dynamically adjust font width
+          char tkn_str[2] = {tkn, '\0'};
+          fontWidth = MeasureText(tkn_str, fontSize) + 1;
+          if (fontWidth * expr_len > WIN_WIDTH - 30) {
+            fontSize -= 3;
+            exprPosX = WIN_WIDTH - (fontWidth * expr_len) + 22;
+            printf("font size: %d\n", fontSize);
+            printf("expr len: %d\n", expr_len);
+            printf("exprPosX: %d\n", exprPosX);
+          }
+          
           if (tkn == '+' || tkn == '-' || tkn == '*' || tkn == '/') {
             expr[expr_len++] = ' ';
             expr[expr_len++] = tkn;
             expr[expr_len++] = ' ';
-            exprPosX -= fontWidth * 3;
+            exprPosX -= fontWidth + 10;
           } else {
             expr[expr_len] = tkn;
             expr_len++;
@@ -259,6 +265,10 @@ int main(void) {
       // sleep_program(20);
     }
 
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    draw_button_grid(buttons);
+    DrawText(expr, exprPosX, 10, fontSize, DARKGRAY);
     EndDrawing();
     wasFocused = isFocused;
   }

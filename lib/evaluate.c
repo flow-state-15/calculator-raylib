@@ -56,8 +56,10 @@ TokenStream lex_expr(char *expr) {
             .value.fval = strtod(expr, &expr_end),
           });
       else token_append(&stream, (Token) {
-            .kind = NUMERIC_I,
-            .value.ival = x
+            /* .kind = NUMERIC_I, */
+            /* .value.ival = x */
+            .kind = NUMERIC_F,
+            .value.fval = x,
           });
       expr = expr_end; 
     }
@@ -250,8 +252,8 @@ Token eval_ast(ASTBinaryNode *node) {
 
 int read_from_eval(char *buffer, Token tkn) {
   switch (tkn.kind) {
-  case NUMERIC_F: return sprintf(buffer, " = %g",  tkn.value.fval);
-  case NUMERIC_I: return sprintf(buffer, " = %ld", tkn.value.ival);
+  case NUMERIC_F: return sprintf(buffer, "%g",  tkn.value.fval);
+  case NUMERIC_I: return sprintf(buffer, "%ld", tkn.value.ival);
   default: return -1;
   }
 }

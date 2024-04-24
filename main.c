@@ -14,6 +14,8 @@
 
 static bool wasFocused = true;
 
+char *evaluated_string_from_expr(char *);
+
 typedef char **InputBuffer[256];
 typedef struct {
   Rectangle rect;
@@ -114,30 +116,6 @@ make_btn(int x, int y, int sz, Color c, char tkn, bool is_square)
 }
 
 
-// refactor idea
-/* #if 0 */
-/* #define SQUARE_WIDTH 49 */
-/* #define MAKE_SQRE_BTN(X, Y, TKN)                     \ */
-/*   make_btn(X, Y, SQUARE_WIDTH, LIGHTGRAY, TKN, true) \ */
-/* #define MAKE_RECT_BTN(X, Y, TKN)           \ */
-/*   make_btn(X, Y, SQUARE_WIDTH, TKN, false) \ */
-/* void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) { */
-/*     int rowHeight = 50; */
-/*     int colWidth = 50; */
-    
-/*     int startX = 4;             // Edge padding */
-/*     int startY = 327 - 2 - 49;  // Bottom edge padding and one button height */
-    
-/*     btns[0] = MAKE_RECT_BTN(startX, startY, 'C'); */
-
-/*     ... */
-
-/*     btns[9] = MAKE_SQRE_BTN(startX, startY - 2 * rowHeight,'1') */
-
-/*     ... blah blah blah */
-/* } */
-/* #endif */
-
 void init_button_geo(Button btns[NUMBER_OF_BUTTONS]) {
     
     btns[0] = make_btn(startX, startY, 49, LIGHTGRAY, 'C', false);
@@ -192,7 +170,6 @@ int main(void) {
   int expr_len = 0;
   expr[expr_len] = '0';
 
-
   while (!WindowShouldClose()) {
     bool isFocused = IsWindowFocused();
 
@@ -205,7 +182,8 @@ int main(void) {
 
     if (isFocused) {
       // todo: when calculating result, change font of input to lighter color
-      // todo: when calculating result, change font of result to darker color (darkgrey)
+      // todo: when calculating result, change font of result to darker color
+      // (darkgrey)
 
       // get mouse down first, then run collision logic
       if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -250,12 +228,9 @@ int main(void) {
           exprPosX = EXPR_POS_X;
           printf("on C, what is expr: %s\n", expr);
         } else if (tkn == '=') {
-          printf("expr: ");
-          for (int i=0; i<strlen(expr); i++) {
-            printf("%c", expr[i]);
-          }
-          printf("\n");
+          printf("EXPR: %s\n", expr);
           printf("evaluating...\n");
+          printf("RESULT: %s\n", evaluated_string_from_expr(expr));
         } else {
           printf("No collision, NULL\n");
         }
@@ -279,8 +254,9 @@ int main(void) {
 }
 #else
 int main(void) {
-  char *expr = "1+2*(2+5)/1*2*(24-5)";
-  printf("EVAL TEST: %s\n", evaluated_string_from_expr(expr));
+  char txt_buffer[MAX_TOKEN_STREAM];
+
+  return EXIT_SUCCESS;
 }
 #endif
 
